@@ -5,7 +5,7 @@ hidden = true
 menu = "main"
 +++
 
-**Hi, I'm Mark Whitby** I'm a Azure Application Development Solution Architect (phew, that's a mouthful) at Microsoft in the UK.
+**Hi, I'm Mark Whitby** I'm an Azure Application Development Solution Architect (phew, that's a mouthful) at Microsoft in the UK.
 
 ***
 
