@@ -1,7 +1,7 @@
 ---
 title: "Deploying Kubernetes on Azure with Azure Kubernetes Service (AKS)"
 date: 2018-06-14T12:02:43+01:00
-draft: false
+draft: true
 description: "Kubernetes the **easy** way"
 tags:
 - azure

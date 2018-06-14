@@ -4,7 +4,7 @@ languageCode = "en-gb"
 title = "Mark Whitby - Azure | Open Source | Code"
 theme = "hugo-cactus-theme"
 # Enter your tracking code to enable Google Analytics
-googleAnalytics = ""
+googleAnalytics = "UA-32768332-1"
 # Disable comments by leaving disqusShortname empty
 disqusShortname = ""
 
