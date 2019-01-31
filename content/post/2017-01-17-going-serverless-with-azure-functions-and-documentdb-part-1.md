@@ -63,11 +63,11 @@ Near the top right, click the "View Files" and "Logs" buttons. This will open up
 * **function.json** provides some configuration information for our function, including details of its inputs and outputs.
 
 At this point, you have a fully working Azure Function. It's a timer function and it's configured to fire every five minutes. If you click the **Run** button at the top of the code panel, the function will run. Nothing will happen, but if you click **Logs** near the top right, you'll get a log panel appear at the bottom and in there you should see something like:
-
+{{< highlight systemd >}}
     2017-01-17T11:25:00.013 Function started (Id=de84439b-b897-4890-8803-4ecfd59a670d)
     2017-01-17T11:25:00.013 C# Timer trigger function executed at: 1/17/2017 11:25:00 AM
     2017-01-17T11:25:00.013 Function completed (Success, Id=de84439b-b897-4890-8803-4ecfd59a670d)
-
+{{< / highlight >}}
 The second line in the log entry is the one that's written out by our function. So, let's get this function doing something more interesting than just writing to a log.
 
 ###  3. Modify the Function Configuration
@@ -117,7 +117,7 @@ We want to add a message queue, so click on **Azure Queue Storage** and then cli
 The **Message parameter name** will be a parameter in our code which will contain the data we want to place into the queue. The **Queue Name** is the name of the queue we will be placing our data into. The **Storage account connection** is the name of an environment variable in the Azure Function App which contains the connection string for our storage account. The default values will be fine for our purposes, so click the **Save** button.
 
 If you click back to the **Develop** view and open `function.json` in the Code panel, you'll see that the configuration has been updated:
-```
+{{< highlight json >}}
 {
   "bindings": [
     {
@@ -136,7 +136,7 @@ If you click back to the **Develop** view and open `function.json` in the Code p
   ],
   "disabled": false
 }
-```
+{{< / highlight >}}
 
 Our `in` bindings are still there, but we now also have an `out` binding for the queue. You'll notice that the timer schedule has been modified as well.
 
@@ -153,14 +153,14 @@ Right click **Queues**, choose **Create Queue** from the menu and then name the 
 ### 5. Write the Code
 
 We're ready to write some code! Return to the Azure Portal and make sure you're back in the **Develop** view with the **Code** panel visible. If it's not open already, open the **View Files** panel and make sure `run.csx` is selected. It should currently look like this:
+{{< highlight csharp >}}
+using System;
 
-    using System;
-    
-    public static void Run(TimerInfo myTimer, TraceWriter log)
-    {
-        log.Info($"C# Timer trigger function executed at: {DateTime.Now}");    
-    }
-
+public static void Run(TimerInfo myTimer, TraceWriter log)
+{
+    log.Info($"C# Timer trigger function executed at: {DateTime.Now}");    
+}
+{{< / highlight >}}
 We need to add in the output parameter which we do by adding `outputQueueItem` as follows
 
     public static void Run(TimerInfo myTimer, ICollector<string> outputQueueItem, TraceWriter log)
@@ -206,7 +206,7 @@ Finally, we need to process the data returned from the API and add the data that
 The really nice thing about functions is that simply adding to my `outputQueueItem` collection will result in the data being written to the queue. I don't need to write any code, or include any external assemblies to specifically perform the write of the data to Azure Queue Storage. When the function completes, the content of `outputQueueItem` will be sent to the queue we specified in the `function.json` file.
 
 Here's our complete code:
-```
+{{< highlight csharp>}}
 #r "Newtonsoft.Json"
 
 using System;
@@ -229,7 +229,7 @@ public static async Task Run(TimerInfo myTimer, ICollector<string> outputQueueIt
         outputQueueItem.Add(json);
     }
 }
-```
+{{< / highlight >}}
 If we now click the **Save** button at the top of the **Code** panel, we will see a message in the logs indicating that the script has changed and, hopefully, that compilation has been successful:
 ```
 2017-01-17T16:16:13.623 Script for function 'TimerTriggerCSharp1' changed. Reloading.

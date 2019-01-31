@@ -17,9 +17,9 @@ Installation is easy enough. Here's a walkthrough of installing the tools on a f
 
 ### Install Node.js
 As the CLI is built with Node.js, you'll need to install that first. There are a couple of choices as to which version of Node you want to deploy and for most production / stable environments you'll likely want the LTS (Long Term Support) version of Node.  At the time of writing, version 4.4.7 is the current LTS version (you can read more about Node.js versions here - https://github.com/nodejs/LTS#lts_schedule).  The following command line will install the repo for the Node.js version 4.x LTS branch:
-
-    curl --silent --location https://rpm.nodesource.com/setup_4.x | sudo bash -
-
+{{< highlight bash >}}
+curl --silent --location https://rpm.nodesource.com/setup_4.x | sudo bash -
+{{< / highlight >}}
 Note the placement of `sudo` in that command line. It's highly likely you'll need root privileges.  Once that's done, we can install Node.js
 
     sudo yum -y install nodejs

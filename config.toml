@@ -1,55 +1,35 @@
-# Site settings
-baseurl = "https://markw.me/"
-languageCode = "en-gb"
-title = "Mark Whitby - Azure | Open Source | Code"
-theme = "hugo-cactus-theme"
-# Enter your tracking code to enable Google Analytics
+baseURL = "https://markw.me"
+title = "Mark Whitby"
+theme = "m10c"
 googleAnalytics = "UA-32768332-1"
-# Disable comments by leaving disqusShortname empty
-disqusShortname = ""
 
 [permalinks]
   post = "/:slug"
 
 [params]
-	name = "Mark Whitby"
-	description = "Azure // Open Source // Code"
-	bio = "Azure | Open Source | Code"
-	# Enter optionally your twitter account
-	twitter = "@MarkWme"
-	enableRSS = true
+  author = "Mark Whitby"
+  description = "Azure // Open Source // Code"
+  [[params.social]]
+    name = "github"
+    url = "https://github.com/MarkWme"
+  [[params.social]]
+    name = "twitter"
+    url = "https://twitter.com/MarkWme"
+  [[params.social]]
+    name = "youtube"
+    url = "https://www.youtube.com/c/CloudTechTV"
 
-	# Integrate Javascript files or stylesheets by adding the url to the external assets or by
-	# linking local files with their path relative to the static folder, e.g. "css/styles.css"
-	customCSS = []
-	customJS  = []
+  # Green theme
+  [params.style]
+  #  darkestColor = "#315659"
+  #  darkColor = "#253031"
+  #  primaryColor = "#dad865"
+  #  lightColor = "#96a879"
+  #  lightestColor = "#fff"
 
-	# The variables below are optionally too and can be used to
-	# translate or customize each string of the theme.
-
-	# Navigation links
-	home = ""
-	subscribe = ""
-	# Pagination links
-	olderPosts = ""
-	newerPosts = ""
-	readMore = ""
-	copyright = ""
-	# Sharing options and author information in posts
-	aboutAuthor = "I'm an Azure Application Development Solution Architect at Microsoft."
-	tweet = ""
-	share = ""
-	# 404 page
-	title404 = ""
-	subtitle404 = ""
-
-	# Choose a font for the social icons in the footer. Either "mono-social" or "font-awesome"
-	iconFont = "font-awesome"
-    # The social icons can be styled differently if you use mono as font - circle, rounded, or empty
-    socialIconStyle = "rounded"
-
-# Add additional social link entries underneath
-[social]
-    twitter  = "https://www.twitter.com/markwme"
-    youtube = "https://www.youtube.com/c/cloudtechtv"
-    github   = "https://www.github.com/markwme"
+  # [params.style]
+  #   darkestColor = "#000000"
+  #   darkColor = "#212121"
+  #   primaryColor = "#ffffff"
+  #   lightColor = "#a2a2a2"
+  #   lightestColor = "#d3d3d3"
