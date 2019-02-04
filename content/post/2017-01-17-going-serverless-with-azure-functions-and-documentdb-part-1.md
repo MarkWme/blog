@@ -65,7 +65,7 @@ Near the top right, click the "View Files" and "Logs" buttons. This will open up
 
 At this point, you have a fully working Azure Function. It's a timer function and it's configured to fire every five minutes. If you click the **Run** button at the top of the code panel, the function will run. Nothing will happen, but if you click **Logs** near the top right, you'll get a log panel appear at the bottom and in there you should see something like: 
 
-{{< highlight >}} 2017-01-17T11:25:00.013 Function started (Id=de84439b-b897-4890-8803-4ecfd59a670d) 2017-01-17T11:25:00.013 C# Timer trigger function executed at: 1/17/2017 11:25:00 AM 2017-01-17T11:25:00.013 Function completed (Success, Id=de84439b-b897-4890-8803-4ecfd59a670d) {{< / highlight >}} 
+{{< highlight bash >}} 2017-01-17T11:25:00.013 Function started (Id=de84439b-b897-4890-8803-4ecfd59a670d) 2017-01-17T11:25:00.013 C# Timer trigger function executed at: 1/17/2017 11:25:00 AM 2017-01-17T11:25:00.013 Function completed (Success, Id=de84439b-b897-4890-8803-4ecfd59a670d) {{< / highlight >}} 
 
 The second line in the log entry is the one that's written out by our function. So, let's get this function doing something more interesting than just writing to a log.
 
