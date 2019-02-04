@@ -1,12 +1,13 @@
 ---
 layout: post
-title:  "Going Serverless with Azure Functions and DocumentDB - Part 1"
-date:   2017-01-17 9:00:00 +0000
+title: Going Serverless with Azure Functions and DocumentDB - Part 1
+date: 2017-01-17 09:00:00 +0000
 tags:
 - azure
 - functions
 - serverless
 slug: going-serverless-with-azure-functions-and-documentdb-part-1
+
 ---
 Today, I had a need to get my head around Azure Functions, so I decided to build a Function App which would take data from a public API and store it in Azure. The idea I came up with was to extract a list of organisations from GitHub and then build a list of some of their repos and star counts and store it in a database.
 
@@ -17,20 +18,20 @@ I came up with the following solution.
 
 The first function provides the input for the second function to process. In this tutorial, we will limit the amount of data retrieved from the GitHub API to keep things simple. If, however, you were working with a large data source then our approach is a good way of making sure that the functions don't spend too much time running. If we were to try and do this with one function, it would retrieve the list of organisations from GitHub, then loop through them querying for more data and building the results list, which could be time consuming. With the approach we will build here, the first function runs relatively quickly on a schedule, the second function is then triggered multiple times to process one queue entry.
 
-The processed data will be written to Azure DocumentDB. Combined with Azure Functions this gives us a ***serverless*** solution, where we have no servers, no operating systems and no databases to patch, run or otherwise maintain.
+The processed data will be written to Azure DocumentDB. Combined with Azure Functions this gives us a **_serverless_** solution, where we have no servers, no operating systems and no databases to patch, run or otherwise maintain.
 
-###  Walkthrough
+### Walkthrough
 
 In part 1, we will set up some pre-requisites, create the Azure Function App and write our first function. In part 2, we will write the second function.
 
-To create this tutorial I've already been through the process of creating my first Azure Functions and I can honestly say that they truly are very simple and fast to build. But as with any new technology, my learning began with that daunting feeling you always get when you start looking at the first page of unfamiliar documentation. *Where do I start with this?* So, here's a walkthrough of how I got my Azure Functions working.
+To create this tutorial I've already been through the process of creating my first Azure Functions and I can honestly say that they truly are very simple and fast to build. But as with any new technology, my learning began with that daunting feeling you always get when you start looking at the first page of unfamiliar documentation. _Where do I start with this?_ So, here's a walkthrough of how I got my Azure Functions working.
 
-###  0. Pre-Requisites
+### 0. Pre-Requisites
 
-There are a couple of things to do prior to getting started with this tutorial. 
+There are a couple of things to do prior to getting started with this tutorial.
 
-* First, it's highly recommended that you install the [Azure Storage Explorer](http://storageexplorer.com/) as it's helpful 
-during development to see what's going on in the Azure Storage Queue that we'll be using.
+* First, it's highly recommended that you install the [Azure Storage Explorer](http://storageexplorer.com/) as it's helpful
+  during development to see what's going on in the Azure Storage Queue that we'll be using.
 * Second, create a DocumentDB account in your Azure Subscription. You don't need to create a database or a collection as we can do that via the Azure Function.
 
 To create a DocumentDB account, go to the Azure Portal at [https://portal.azure.com](https://portal.azure.com) and once signed-in click the **+ New** link at the top left, choose **Databases** and then **NoSQL (DocumentDB)**
@@ -39,7 +40,7 @@ To create a DocumentDB account, go to the Azure Portal at [https://portal.azure.
 
 For **account ID** you just need to provide a unique name for your DocumentDB account. Leave the **NoSQL API** value at its default of **DocumentDB** and choose the appropriate Azure subscription from the list. Provide a unique name for the Resource Group that will contain your DocumentDB resources and then select an Azure region from the **Location** list. If you don't know which region to choose, just pick one that's near you.
 
-###  1. Create a Function App
+### 1. Create a Function App
 
 If you haven't used Azure Functions before, the starting point is here [https://functions.azure.com/](https://functions.azure.com/). From there you can either sign in to your existing Azure subscription or create a free account to try Functions out. Once you're done with the sign-up / sign-in, you'll get to here:
 
@@ -47,7 +48,7 @@ If you haven't used Azure Functions before, the starting point is here [https://
 
 If you have more than one Azure subscription, you can select it here. You then need to choose a unique name for your Function App and select an Azure Region where your function will be deployed to. If you're unsure which region to choose, just pick one that's nearest to whatever part of the world you're in.
 
-###  2. Create the First Function
+### 2. Create the First Function
 
 A few moments after you click the **Create + get started** button you'll be taken to the Azure Portal where the Function app blade will be open at the quick start page
 
@@ -62,15 +63,13 @@ Near the top right, click the "View Files" and "Logs" buttons. This will open up
 * **run.csx** is a C# script file which is where we will write our code.
 * **function.json** provides some configuration information for our function, including details of its inputs and outputs.
 
-At this point, you have a fully working Azure Function. It's a timer function and it's configured to fire every five minutes. If you click the **Run** button at the top of the code panel, the function will run. Nothing will happen, but if you click **Logs** near the top right, you'll get a log panel appear at the bottom and in there you should see something like:
-{{< highlight systemd >}}
-    2017-01-17T11:25:00.013 Function started (Id=de84439b-b897-4890-8803-4ecfd59a670d)
-    2017-01-17T11:25:00.013 C# Timer trigger function executed at: 1/17/2017 11:25:00 AM
-    2017-01-17T11:25:00.013 Function completed (Success, Id=de84439b-b897-4890-8803-4ecfd59a670d)
-{{< / highlight >}}
+At this point, you have a fully working Azure Function. It's a timer function and it's configured to fire every five minutes. If you click the **Run** button at the top of the code panel, the function will run. Nothing will happen, but if you click **Logs** near the top right, you'll get a log panel appear at the bottom and in there you should see something like: 
+
+{{< highlight >}} 2017-01-17T11:25:00.013 Function started (Id=de84439b-b897-4890-8803-4ecfd59a670d) 2017-01-17T11:25:00.013 C# Timer trigger function executed at: 1/17/2017 11:25:00 AM 2017-01-17T11:25:00.013 Function completed (Success, Id=de84439b-b897-4890-8803-4ecfd59a670d) {{< / highlight >}} 
+
 The second line in the log entry is the one that's written out by our function. So, let's get this function doing something more interesting than just writing to a log.
 
-###  3. Modify the Function Configuration
+### 3. Modify the Function Configuration
 
 There are two things we want to modify. First, we don't want this to run every 5 minutes. Instead, we want this to run hourly. Second, we need to output the results of the function to an Azure Storage queue.
 
@@ -88,9 +87,9 @@ Making sure you have the files panel open, click on the `function.json` file and
       ]
     }
 
-The `disabled` property is set to `false` by default, which means our function is running, or ready to run. In some circumstances you may want to stop the function from firing, which is easily achieved by changing `disabled` to `true`. 
+The `disabled` property is set to `false` by default, which means our function is running, or ready to run. In some circumstances you may want to stop the function from firing, which is easily achieved by changing `disabled` to `true`.
 
-The `bindings` section configures the input and outputs for the function. In this case, we have a `timerTrigger` as an input, indicated by the `direction` property being set to `in`. The `schedule` indicates how often the function will run and uses cron format. In this case, it's set to run every 5 minutes. 
+The `bindings` section configures the input and outputs for the function. In this case, we have a `timerTrigger` as an input, indicated by the `direction` property being set to `in`. The `schedule` indicates how often the function will run and uses cron format. In this case, it's set to run every 5 minutes.
 
 We can edit the `function.json` but Azure Functions provides another way to do this. On the left side of the portal we have four options:
 
@@ -119,22 +118,22 @@ The **Message parameter name** will be a parameter in our code which will contai
 If you click back to the **Develop** view and open `function.json` in the Code panel, you'll see that the configuration has been updated:
 {{< highlight json >}}
 {
-  "bindings": [
-    {
-      "name": "myTimer",
-      "type": "timerTrigger",
-      "direction": "in",
-      "schedule": "0 0 * * * *"
-    },
-    {
-      "type": "queue",
-      "name": "outputQueueItem",
-      "queueName": "outqueue",
-      "connection": "AzureWebJobsStorage",
-      "direction": "out"
-    }
-  ],
-  "disabled": false
+"bindings": \[
+{
+"name": "myTimer",
+"type": "timerTrigger",
+"direction": "in",
+"schedule": "0 0 * * * *"
+},
+{
+"type": "queue",
+"name": "outputQueueItem",
+"queueName": "outqueue",
+"connection": "AzureWebJobsStorage",
+"direction": "out"
+}
+\],
+"disabled": false
 }
 {{< / highlight >}}
 
@@ -158,7 +157,7 @@ using System;
 
 public static void Run(TimerInfo myTimer, TraceWriter log)
 {
-    log.Info($"C# Timer trigger function executed at: {DateTime.Now}");    
+log.Info($"C# Timer trigger function executed at: {DateTime.Now}");  
 }
 {{< / highlight >}}
 We need to add in the output parameter which we do by adding `outputQueueItem` as follows
@@ -169,13 +168,11 @@ We add the parameter as an `ICollector` of type `string` because the output bind
 
 We're going to make a call to the GitHub API and then process the JSON data returned. Azure Functions includes a selection of frequently used namespaces and assemblies, including those used for making HTTP calls and processing JSON data, so we need to modify the start of our code as follows:
 
-```
-#r "Newtonsoft.Json"
-
-using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-```
+    #r "Newtonsoft.Json"
+    
+    using System;
+    using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
 
 We can now remove the `log.Info ...` line at the start of our code and replace it with the code to make the HTTP calls to the GitHub API.
 
@@ -207,7 +204,7 @@ The really nice thing about functions is that simply adding to my `outputQueueIt
 
 Here's our complete code:
 {{< highlight csharp>}}
-#r "Newtonsoft.Json"
+\#r "Newtonsoft.Json"
 
 using System;
 using Newtonsoft.Json;
@@ -215,32 +212,31 @@ using Newtonsoft.Json.Linq;
 
 public static async Task Run(TimerInfo myTimer, ICollector<string> outputQueueItem, TraceWriter log)
 {
-    HttpClient client = new HttpClient();
-    client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("Mozilla", "5.0"));
-    JArray response = JArray.Parse(await client.GetStringAsync("https://api.github.com/organizations?per_page=5"));
-    foreach (JObject org in response)
-    {
-        object document = new {
-            id = org["id"].ToString(),
-            orgname = org["login"].ToString(),
-            repos = org["repos_url"].ToString()
-            };
-        string json = JsonConvert.SerializeObject(document);
-        outputQueueItem.Add(json);
-    }
+HttpClient client = new HttpClient();
+client.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("Mozilla", "5.0"));
+JArray response = JArray.Parse(await client.GetStringAsync("https://api.github.com/organizations?per_page=5"));
+foreach (JObject org in response)
+{
+object document = new {
+id = org\["id"\].ToString(),
+orgname = org\["login"\].ToString(),
+repos = org\["repos_url"\].ToString()
+};
+string json = JsonConvert.SerializeObject(document);
+outputQueueItem.Add(json);
+}
 }
 {{< / highlight >}}
 If we now click the **Save** button at the top of the **Code** panel, we will see a message in the logs indicating that the script has changed and, hopefully, that compilation has been successful:
-```
-2017-01-17T16:16:13.623 Script for function 'TimerTriggerCSharp1' changed. Reloading.
-2017-01-17T16:16:13.685 Compilation succeeded.
-```
+
+    2017-01-17T16:16:13.623 Script for function 'TimerTriggerCSharp1' changed. Reloading.
+    2017-01-17T16:16:13.685 Compilation succeeded.
 
 Finally, we can click the **Run** button to see what our function does.
-```
-2017-01-17T16:17:37.480 Function started (Id=dacedfbc-faaf-467f-94d0-153f1bf61da8)
-2017-01-17T16:17:38.691 Function completed (Success, Id=dacedfbc-faaf-467f-94d0-153f1bf61da8)
-```
+
+    2017-01-17T16:17:37.480 Function started (Id=dacedfbc-faaf-467f-94d0-153f1bf61da8)
+    2017-01-17T16:17:38.691 Function completed (Success, Id=dacedfbc-faaf-467f-94d0-153f1bf61da8)
+
 Not much, apparently. But wait, let's take a look in the Azure Storage Explorer:
 
 ![](/images/2017/01/functions-storage-explorer-queue-content-3.png)
